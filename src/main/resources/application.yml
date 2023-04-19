@@ -26,17 +26,17 @@ spring:
     # 端口
     port: 465
     # 账号
-    username: 1041458415@qq.com
+    username: fdmmi@qq.com
     # 密码
-    password: wxhmclal123.+666
+    password: bbdxeuclsoktdhjj
     # 协议
     protocol: smtps
     # 详细配置
     properties:
-      mail:
-        smtp:
-          ssl:
-            enable: true
+     mail:
+      smtp:
+       ssl:
+        enable: true
 
 # MybatisProperties
 mybatis:
