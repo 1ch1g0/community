@@ -1,0 +1,53 @@
+# ServerProperties
+server:
+  port: 8080
+  servlet:
+    context-path: /community
+
+# ThymeleafProperties
+spring:
+  thymeleaf:
+    cache: false
+# DatasourceProperties
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/community?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+# MailProperties
+  mail:
+    # 域名
+    host: smtp.qq.com
+    # 端口
+    port: 465
+    # 账号
+    username: 1041458415@qq.com
+    # 密码
+    password: wxhmclal123.+666
+    # 协议
+    protocol: smtps
+    # 详细配置
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+
+# MybatisProperties
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.ichigo.community.entity
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+# logger
+logging:
+  level:
+    com:
+      ichigo:
+        community: debug
