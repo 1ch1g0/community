@@ -51,3 +51,7 @@ logging:
     com:
       ichigo:
         community: debug
+#community
+community:
+  path:
+    domain: http://localhost:8080
