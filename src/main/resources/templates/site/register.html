@@ -71,7 +71,7 @@
 								   th:class="|form-control ${usernameMsg!=null?'is-invalid':''}|"
 								   th:value="${user!=null?user.username:''}"
 								   id="username" name="username" placeholder="请输入您的账号!" required>
-							<div class="invalid-feedback">
+							<div class="invalid-feedback" th:text="${usernameMsg}">
 								该账号已存在!
 							</div>
 						</div>
@@ -83,7 +83,7 @@
 								   th:class="|form-control ${passwordMsg!=null?'is-invalid':''}|"
 								   th:value="${user!=null?user.password:''}"
 								   id="password" name="password" placeholder="请输入您的密码!" required>
-							<div class="invalid-feedback">
+							<div class="invalid-feedback" th:text="${passwordMsg}">
 								密码长度不能小于8位!
 							</div>							
 						</div>
@@ -106,7 +106,7 @@
 								   th:class="|form-control ${emailMsg!=null?'is-invalid':''}|"
 								   th:value="${user!=null?user.email:''}"
 								   id="email" name="email" placeholder="请输入您的邮箱!" required>
-							<div class="invalid-feedback">
+							<div class="invalid-feedback" th:text="${emailMsg}">
 								该邮箱已注册!
 							</div>
 						</div>

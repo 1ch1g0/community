@@ -1,8 +1,10 @@
 package com.ichigo.community;
 
 import com.ichigo.community.entity.DiscussPost;
+import com.ichigo.community.entity.LoginTicket;
 import com.ichigo.community.entity.User;
 import com.ichigo.community.mapper.DiscussPostMapper;
+import com.ichigo.community.mapper.LoginTicketMapper;
 import com.ichigo.community.mapper.UserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,9 @@ public class MapperTests {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Test
     public void testGetUser(){
@@ -69,5 +74,25 @@ public class MapperTests {
 
         int count = discussPostMapper.selectDiscussPostRows(101);
         System.out.println(count);
+    }
+
+    @Test
+    public void testInsertLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    @Test
+    public void testSelectAndUpdateLoginTicket(){
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("abc", 1);
+        loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
     }
 }
