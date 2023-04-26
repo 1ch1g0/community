@@ -177,6 +177,11 @@ public class LoginController implements CommunityConstant {
         }
     }
 
+    /**
+     * 响应退出登录请求
+     * @param ticket
+     * @return
+     */
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);

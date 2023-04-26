@@ -1,5 +1,6 @@
 package com.ichigo.community.controller;
 
+import com.ichigo.community.annotation.LoginRequired;
 import com.ichigo.community.entity.User;
 import com.ichigo.community.service.UserService;
 import com.ichigo.community.util.CommunityUtil;
@@ -45,6 +46,7 @@ public class UserController {
      * 响应账户设置页面请求
      * @return
      */
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage(){
         return "/site/setting";
@@ -56,6 +58,7 @@ public class UserController {
      * @param model
      * @return
      */
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model){
         if(headerImage == null){
@@ -127,6 +130,7 @@ public class UserController {
      * @param newPassword
      * @return
      */
+    @LoginRequired
     @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
     public String updatePassword(Model model, String originalPassword, String newPassword){
         Map<String, Object> map = userService.updatePassword(hostHolder.getUser(), originalPassword, newPassword);
