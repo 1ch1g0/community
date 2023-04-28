@@ -3,10 +3,13 @@ package com.ichigo.community.controller;
 import com.ichigo.community.entity.DiscussPost;
 import com.ichigo.community.entity.User;
 import com.ichigo.community.service.DiscussPostService;
+import com.ichigo.community.service.UserService;
 import com.ichigo.community.util.CommunityUtil;
 import com.ichigo.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +25,9 @@ public class DiscussPostController {
 
     @Autowired
     private DiscussPostService discussPostService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 响应新增帖子
@@ -46,5 +52,23 @@ public class DiscussPostController {
 
         //报错的情况，将来统一处理
         return CommunityUtil.getJSONString(0, "发布成功！");
+    }
+
+    /**
+     * 响应查看帖子详情
+     * @param discussPostId
+     * @param model
+     * @return
+     */
+    @RequestMapping(path = "/detail/{discussPostId}", method = RequestMethod.GET)
+    public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model){
+        //获取帖子信息
+        DiscussPost post = discussPostService.findDiscussPostById(discussPostId);
+        model.addAttribute("post", post);
+        //获取作者信息
+        User user = userService.findById(post.getUserId());
+        model.addAttribute(user);
+
+        return "/site/discuss-detail";
     }
 }
