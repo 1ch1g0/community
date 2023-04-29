@@ -7,6 +7,7 @@ public class Comment {
     private int id;
     private int userId;
     private int entityType;
+    private int entityId;
     private int targetId;
     private String content;
     private int status;
@@ -34,6 +35,14 @@ public class Comment {
 
     public void setEntityType(int entityType) {
         this.entityType = entityType;
+    }
+
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
     }
 
     public int getTargetId() {
