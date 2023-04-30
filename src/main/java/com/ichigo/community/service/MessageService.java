@@ -2,8 +2,10 @@ package com.ichigo.community.service;
 
 import com.ichigo.community.entity.Message;
 import com.ichigo.community.mapper.MessageMapper;
+import com.ichigo.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -12,6 +14,9 @@ public class MessageService {
 
     @Autowired
     private MessageMapper messageMapper;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     /**
      * 查询当前用户的会话列表，每个会话显示最新的一条消息
@@ -61,6 +66,29 @@ public class MessageService {
      */
     public int findLetterUnreadCount(int userId, String conversationId){
         return messageMapper.selectLetterUnreadCount(userId, conversationId);
+    }
+
+    /**
+     * 新增私信
+     * @param message
+     * @return
+     */
+    public int addMessage(Message message){
+        //转换新增私信中的HTML标签
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        //过滤新增私信中的敏感词
+        message.setContent(sensitiveFilter.filter(message.getContent()));
+        //添加私信
+        return messageMapper.insertMessage(message);
+    }
+
+    /**
+     * 将未读私信更新为已读
+     * @param ids
+     * @return
+     */
+    public int readMessage(List<Integer> ids){
+        return messageMapper.updateStatus(ids, 1);
     }
 
 }

@@ -5,18 +5,18 @@ import com.ichigo.community.entity.Page;
 import com.ichigo.community.entity.User;
 import com.ichigo.community.service.MessageService;
 import com.ichigo.community.service.UserService;
+import com.ichigo.community.util.CommunityUtil;
 import com.ichigo.community.util.HostHolder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MessageController {
@@ -104,6 +104,12 @@ public class MessageController {
         //将会话对方的信息添加到模板中
         model.addAttribute("target", getLetterTarget(conversationId));
 
+        //将未读消息转换为已读
+        List<Integer> ids = getLetterIds(letterList);
+        if(!ids.isEmpty()){
+            messageService.readMessage(ids);
+        }
+
         return "/site/letter-detail";
     }
 
@@ -124,4 +130,61 @@ public class MessageController {
             return userService.findById(id0);
         }
     }
+
+    /**
+     * 响应发送私信请求
+     * @param toName
+     * @param content
+     * @return
+     */
+    @RequestMapping(path = "/letter/send", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendLetter(String toName, String content){
+        //根据用户名获取目标用户的信息
+        User target = userService.findByName(toName);
+        //判空
+        if(target == null){
+            return CommunityUtil.getJSONString(1, "目标用户不存在！");
+        }
+        if(StringUtils.isBlank(content)){
+            return CommunityUtil.getJSONString(2, "内容不能为空！");
+        }
+
+        //构造私信内容
+        Message message = new Message();
+        message.setFromId(hostHolder.getUser().getId());
+        message.setToId(target.getId());
+        if(message.getFromId() < message.getToId()){
+            message.setConversationId(message.getFromId() + "_" + message.getToId());
+        }else{
+            message.setConversationId(message.getToId() + "_" + message.getFromId());
+        }
+        message.setContent(content);
+        message.setCreateTime(new Date());
+
+        //发送私信
+        messageService.addMessage(message);
+
+        //返回成功信息
+        return CommunityUtil.getJSONString(0);
+    }
+
+    /**
+     * 获取会话中未读私信的id
+     * @param letterList
+     * @return
+     */
+    private List<Integer> getLetterIds(List<Message> letterList){
+        List<Integer> ids = new ArrayList<>();
+
+        if(letterList != null){
+            for (Message message : letterList) {
+                if(hostHolder.getUser().getId() == message.getToId() && message.getStatus() == 0){
+                    ids.add(message.getId());
+                }
+            }
+        }
+        return ids;
+    }
+
 }

@@ -40,8 +40,22 @@ public class UserService implements CommunityConstant {
     @Value("${community.path.domain}")
     private String domain;
 
+    /**
+     * 根据用户id查询用户信息
+     * @param id
+     * @return
+     */
     public User findById(int id){
         return userMapper.getById(id);
+    }
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
+    public User findByName(String username){
+        return userMapper.getByUsername(username);
     }
 
     /**
@@ -239,4 +253,5 @@ public class UserService implements CommunityConstant {
 
         return map;
     }
+
 }
