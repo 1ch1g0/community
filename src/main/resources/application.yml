@@ -19,7 +19,12 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
-# MailProperties
+# RedisProperties
+  redis:
+    database: 15
+    host: localhost
+    port: 6379
+  # MailProperties
   mail:
     # 域名
     host: smtp.qq.com

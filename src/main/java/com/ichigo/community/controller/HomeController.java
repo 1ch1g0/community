@@ -4,7 +4,9 @@ import com.ichigo.community.entity.DiscussPost;
 import com.ichigo.community.entity.Page;
 import com.ichigo.community.entity.User;
 import com.ichigo.community.service.DiscussPostService;
+import com.ichigo.community.service.LikeService;
 import com.ichigo.community.service.UserService;
+import com.ichigo.community.util.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,13 +19,16 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LikeService likeService;
 
     /**
      * 响应分页请求主页
@@ -43,9 +48,14 @@ public class HomeController {
         if(list != null){
             for(DiscussPost post : list){
                 Map<String, Object> map = new HashMap<>();
+                //封装帖子信息
                 map.put("post", post);
+                //封装帖子作者信息
                 User user = userService.findById(post.getUserId());
                 map.put("user", user);
+                //封装点赞信息
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                map.put("likeCount", likeCount);
                 discussPosts.add(map);
             }
         }
