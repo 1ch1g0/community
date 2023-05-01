@@ -26,7 +26,7 @@ public class HomeController {
     private UserService userService;
 
     /**
-     * 分页请求主页
+     * 响应分页请求主页
      * @param model
      * @param page
      * @return
@@ -52,4 +52,14 @@ public class HomeController {
         model.addAttribute("discussPosts", discussPosts);
         return "/index";
     }
+
+    /**
+     * 响应错误页面请求
+     * @return
+     */
+    @RequestMapping(path = "/error", method = RequestMethod.GET)
+    public String getErrorPage(){
+        return "/site/500";
+    }
+
 }

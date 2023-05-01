@@ -132,7 +132,7 @@ public class MessageController {
     }
 
     /**
-     * 响应发送私信请求
+     * 响应发送私信请求(异步请求)
      * @param toName
      * @param content
      * @return
