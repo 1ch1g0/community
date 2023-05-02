@@ -31,12 +31,12 @@ public class LikeController {
      */
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId){
+    public String like(int entityType, int entityId, int entityUserId){
         //获取当前点赞用户数据
         User user = hostHolder.getUser();
 
         //点赞
-        likeService.like(user.getId(), entityType, entityId);
+        likeService.like(user.getId(), entityType, entityId, entityUserId);
 
         //获取点赞数
         long likeCount = likeService.findEntityLikeCount(entityType, entityId);

@@ -2,6 +2,7 @@ package com.ichigo.community.controller;
 
 import com.ichigo.community.annotation.LoginRequired;
 import com.ichigo.community.entity.User;
+import com.ichigo.community.service.LikeService;
 import com.ichigo.community.service.UserService;
 import com.ichigo.community.util.CommunityUtil;
 import com.ichigo.community.util.HostHolder;
@@ -32,6 +33,9 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
     @Value("${community.path.domain}")
     private String domain;
@@ -143,5 +147,30 @@ public class UserController {
             model.addAttribute("newPasswordMsg", map.get("newPasswordMsg"));
             return "/site/setting";
         }
+    }
+
+    /**
+     * 响应个人主页请求
+     * @param userId
+     * @param model
+     * @return
+     */
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model){
+        //查询用户信息
+        User user = userService.findById(userId);
+        //判空
+        if(user == null){
+            throw new RuntimeException("该用户不存在！");
+        }
+
+        //将用户信息添加到thymeleaf模板中
+        model.addAttribute("user", user);
+        //获取被赞数
+        int likeCount = likeService.findUserLikeCount(userId);
+        //将被赞数添加到模板中
+        model.addAttribute("likeCount", likeCount);
+
+        return "/site/profile";
     }
 }

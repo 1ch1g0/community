@@ -1,10 +1,10 @@
-function like(btn, entityType, entityId) {
+function like(btn, entityType, entityId, entityUserId) {
     //异步请求
     $.post(
         //请求路径
         CONTEXT_PATH + "/like",
         //请求参数
-        {"entityType":entityType, "entityId":entityId},
+        {"entityType":entityType, "entityId":entityId, "entityUserId":entityUserId},
         //回调函数
         function (data){
             //将传回的数据转成JSON格式
