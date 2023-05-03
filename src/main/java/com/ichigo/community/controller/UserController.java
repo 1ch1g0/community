@@ -2,8 +2,10 @@ package com.ichigo.community.controller;
 
 import com.ichigo.community.annotation.LoginRequired;
 import com.ichigo.community.entity.User;
+import com.ichigo.community.service.FollowService;
 import com.ichigo.community.service.LikeService;
 import com.ichigo.community.service.UserService;
+import com.ichigo.community.util.CommunityConstant;
 import com.ichigo.community.util.CommunityUtil;
 import com.ichigo.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -36,6 +38,9 @@ public class UserController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @Value("${community.path.domain}")
     private String domain;
@@ -170,6 +175,18 @@ public class UserController {
         int likeCount = likeService.findUserLikeCount(userId);
         //将被赞数添加到模板中
         model.addAttribute("likeCount", likeCount);
+        //获取关注数
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount", followeeCount);
+        //获取粉丝数
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount", followerCount);
+        //查询是否已关注
+        boolean hasFollowed = false;
+        if(hostHolder.getUser() != null){
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
 
         return "/site/profile";
     }
