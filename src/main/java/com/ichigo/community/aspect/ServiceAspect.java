@@ -29,6 +29,9 @@ public class ServiceAspect {
         //日志格式：用户[1.2.3.4]，在[time]，访问了[com.ichigo.community.service.xxx()]
         //获取request对象
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if(attributes == null){
+            return;
+        }
         HttpServletRequest request = attributes.getRequest();
         //获取请求主机、请求时间和请求目标
         String ip = request.getRemoteHost();

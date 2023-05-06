@@ -1,7 +1,9 @@
 package com.ichigo.community.controller;
 
+import com.ichigo.community.entity.Event;
 import com.ichigo.community.entity.Page;
 import com.ichigo.community.entity.User;
+import com.ichigo.community.event.EventProducer;
 import com.ichigo.community.service.FollowService;
 import com.ichigo.community.service.UserService;
 import com.ichigo.community.util.CommunityConstant;
@@ -30,6 +32,9 @@ public class FollowController implements CommunityConstant {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     /**
      * 响应关注请求
      * @param entityType
@@ -43,6 +48,16 @@ public class FollowController implements CommunityConstant {
         User user = hostHolder.getUser();
         //关注
         followService.follow(user.getId(), entityType, entityId);
+
+        //触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserId(user.getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
+
         //返回成功信息
         return CommunityUtil.getJSONString(0, "关注成功！");
     }

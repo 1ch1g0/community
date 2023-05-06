@@ -77,4 +77,14 @@ public class CommentService implements CommunityConstant {
 
         return rows;
     }
+
+    /**
+     * 根据id获取单个评论
+     * @param id
+     * @return
+     */
+    public Comment findCommentById(int id){
+        return commentMapper.selectCommentById(id);
+    }
+
 }

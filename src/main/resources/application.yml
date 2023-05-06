@@ -4,11 +4,11 @@ server:
   servlet:
     context-path: /community
 
-# ThymeleafProperties
 spring:
+  # ThymeleafProperties
   thymeleaf:
     cache: false
-# DatasourceProperties
+  # DatasourceProperties
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/community?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
@@ -19,11 +19,18 @@ spring:
       maximum-pool-size: 15
       minimum-idle: 5
       idle-timeout: 30000
-# RedisProperties
+  # RedisProperties
   redis:
     database: 15
     host: localhost
     port: 6379
+  # KafkaProperties
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: community-consumer-group
+      enable-auto-commit: true
+      auto-commit-interval: 3000
   # MailProperties
   mail:
     # 域名

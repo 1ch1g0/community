@@ -1,7 +1,10 @@
 package com.ichigo.community.controller;
 
+import com.ichigo.community.entity.Event;
 import com.ichigo.community.entity.User;
+import com.ichigo.community.event.EventProducer;
 import com.ichigo.community.service.LikeService;
+import com.ichigo.community.util.CommunityConstant;
 import com.ichigo.community.util.CommunityUtil;
 import com.ichigo.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +17,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class LikeController {
+public class LikeController implements CommunityConstant {
 
     @Autowired
     private HostHolder hostHolder;
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private EventProducer eventProducer;
 
     /**
      * 响应点赞请求
@@ -31,7 +37,7 @@ public class LikeController {
      */
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId, int entityUserId){
+    public String like(int entityType, int entityId, int entityUserId, int postId){
         //获取当前点赞用户数据
         User user = hostHolder.getUser();
 
@@ -46,6 +52,18 @@ public class LikeController {
         Map<String, Object> map = new HashMap<>();
         map.put("likeCount", likeCount);
         map.put("likeStatus", likeStatus);
+
+        //触发点赞事件
+        if(likeStatus == 1){
+            Event event = new Event()
+                    .setTopic(TOPIC_LIKE)
+                    .setUserId(user.getId())
+                    .setEntityType(entityType)
+                    .setEntityId(entityId)
+                    .setEntityUserId(entityUserId)
+                    .setData("postId", postId);
+            eventProducer.fireEvent(event);
+        }
 
         //将封装的map集合返回给前端
         return CommunityUtil.getJSONString(0, null, map);
