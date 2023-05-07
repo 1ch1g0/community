@@ -211,7 +211,7 @@ public class UserService implements CommunityConstant {
     public void logout(String ticket){
         //loginTicketMapper.updateStatus(ticket, 1);
         String ticketKey = RedisKeyUtil.getTicketKey(ticket);
-        LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get("ticketKey");
+        LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
         loginTicket.setStatus(1);
         redisTemplate.opsForValue().set(ticketKey, loginTicket);
     }
