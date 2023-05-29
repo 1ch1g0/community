@@ -59,6 +59,13 @@ public class DiscussPostController implements CommunityConstant {
         discussPost.setTitle(title);
         discussPost.setContent(content);
         discussPost.setCreateTime(new Date());
+        //判空
+        if(discussPost.getTitle() == null || discussPost.getTitle().length() == 0){
+            return CommunityUtil.getJSONString(403, "标题不能为空！");
+        }
+        if(discussPost.getContent() == null || discussPost.getContent().length() == 0){
+            return CommunityUtil.getJSONString(403, "内容不能为空！");
+        }
         discussPostService.addDiscussPost(discussPost);
 
         //报错的情况，将来统一处理

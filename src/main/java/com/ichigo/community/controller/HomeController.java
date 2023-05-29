@@ -64,12 +64,21 @@ public class HomeController implements CommunityConstant {
     }
 
     /**
-     * 响应错误页面请求
+     * 响应500错误页面请求
      * @return
      */
     @RequestMapping(path = "/error", method = RequestMethod.GET)
     public String getErrorPage(){
         return "/site/500";
+    }
+
+    /**
+     * 响应404错误页面请求
+     * @return
+     */
+    @RequestMapping(path = "/denied", method = RequestMethod.GET)
+    public String getDeniedPage(){
+        return "/error/404";
     }
 
 }
