@@ -1,8 +1,11 @@
 package com.ichigo.community.event;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.ichigo.community.entity.DiscussPost;
 import com.ichigo.community.entity.Event;
 import com.ichigo.community.entity.Message;
+import com.ichigo.community.service.DiscussPostService;
+import com.ichigo.community.service.ElasticsearchService;
 import com.ichigo.community.service.MessageService;
 import com.ichigo.community.util.CommunityConstant;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -24,8 +27,14 @@ public class EventConsumer implements CommunityConstant {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private DiscussPostService discussPostService;
+
+    @Autowired
+    private ElasticsearchService elasticsearchService;
+
     /**
-     * 接收事件消息
+     * 接收并消费事件消息
      * @param record
      */
     @KafkaListener(topics = {TOPIC_COMMENT, TOPIC_LIKE, TOPIC_FOLLOW})
@@ -66,6 +75,32 @@ public class EventConsumer implements CommunityConstant {
         message.setContent(JSONObject.toJSONString(content));
         //发送消息
         messageService.addMessage(message);
+    }
+
+    /**
+     * 消费发帖事件
+     * @param record
+     */
+    @KafkaListener(topics = {TOPIC_PUBLISH})
+    public void handlePublishMessage(ConsumerRecord record){
+        //判空
+        if(record == null || record.value() == null){
+            LOGGER.error("消息的内容为空！");
+            return;
+        }
+
+        //将消息内容字符串转换为Event对象
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        //判空
+        if(event == null){
+            LOGGER.error("消息格式错误！");
+            return;
+        }
+
+        //根据事件中的id查出帖子
+        DiscussPost post = discussPostService.findDiscussPostById(event.getEntityId());
+        //将帖子信息存入搜索引擎
+        elasticsearchService.saveDiscussPost(post);
     }
 
 }

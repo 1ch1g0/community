@@ -1,9 +1,7 @@
 package com.ichigo.community.controller;
 
-import com.ichigo.community.entity.Comment;
-import com.ichigo.community.entity.DiscussPost;
-import com.ichigo.community.entity.Page;
-import com.ichigo.community.entity.User;
+import com.ichigo.community.entity.*;
+import com.ichigo.community.event.EventProducer;
 import com.ichigo.community.service.CommentService;
 import com.ichigo.community.service.DiscussPostService;
 import com.ichigo.community.service.LikeService;
@@ -40,6 +38,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     /**
      * 响应新增帖子
      * @param title
@@ -67,6 +68,15 @@ public class DiscussPostController implements CommunityConstant {
             return CommunityUtil.getJSONString(403, "内容不能为空！");
         }
         discussPostService.addDiscussPost(discussPost);
+
+        //触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(discussPost.getId());
+        //发布事件
+        eventProducer.fireEvent(event);
 
         //报错的情况，将来统一处理
         return CommunityUtil.getJSONString(0, "发布成功！");
