@@ -211,7 +211,7 @@ public class LoginController implements CommunityConstant {
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
         //清理SecurityContextHolder
-        //SecurityContextHolder.clearContext();
+        SecurityContextHolder.clearContext();
         return "redirect:/login";
     }
 }
