@@ -1,5 +1,6 @@
 package com.ichigo.community.config;
 
+import com.ichigo.community.controller.interceptor.DataInterceptor;
 import com.ichigo.community.controller.interceptor.LoginRequiredInterceptor;
 import com.ichigo.community.controller.interceptor.LoginTicketInterceptor;
 import com.ichigo.community.controller.interceptor.MessageInterceptor;
@@ -20,6 +21,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private MessageInterceptor messageInterceptor;
 
+    @Autowired
+    private DataInterceptor dataInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginTicketInterceptor)
@@ -30,5 +34,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(messageInterceptor)
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
+
+        registry.addInterceptor(dataInterceptor)
+                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
+
     }
 }

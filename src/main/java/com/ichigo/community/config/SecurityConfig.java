@@ -58,7 +58,8 @@ public class SecurityConfig implements CommunityConstant {
                         AUTHORITY_MODERATOR
                 )
                 .antMatchers(
-                        "/discuss/delete"
+                        "/discuss/delete",
+                        "/data/**"
                 )
                 .hasAnyAuthority(
                         AUTHORITY_ADMIN
