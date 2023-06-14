@@ -22,6 +22,8 @@ public class RedisKeyUtil {
     private static final String PREFIX_UV = "uv";
     //定义DAU的key前缀
     private static final String PREFIX_DAU = "dau";
+    //定义帖子分数的key前缀
+    private static final String PREFIX_POST = "post";
 
     /**
      *  获取实体所受赞的key
@@ -148,6 +150,16 @@ public class RedisKeyUtil {
      */
     public static String getDAUKey(String startDate, String endDate){
         return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    /**
+     *  获取帖子分数的key
+     *  key表示帖子分数的key，value表示帖子ID
+     *  格式：post:score  ->set(redisKey, discussPostId)
+     * @return
+     */
+    public static String getPostScoreKey(){
+        return PREFIX_POST + SPLIT + "score";
     }
 
 }
