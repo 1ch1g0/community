@@ -73,3 +73,8 @@ community:
     domain: http://localhost:8080
     #上传路径
     upload: D:/develop/workspace/data/upload
+# wk
+wk:
+  image:
+    command: d:/develop/wkhtmltopdf/bin/wkhtmltoimage
+    storage: d:/develop/workspace/data/wk-images

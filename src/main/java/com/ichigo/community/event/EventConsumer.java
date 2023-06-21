@@ -12,9 +12,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,12 @@ public class EventConsumer implements CommunityConstant {
 
     @Autowired
     private ElasticsearchService elasticsearchService;
+
+    @Value("${wk.image.storage}")
+    private String WKImageStorage;
+
+    @Value("${wk.image.command}")
+    private String WKImageCommand;
 
     /**
      * 接收并消费事件消息
@@ -125,6 +133,42 @@ public class EventConsumer implements CommunityConstant {
 
         //消费删帖事件
         elasticsearchService.deleteDiscussPost(event.getEntityId());
+    }
+
+    /**
+     * 消费分享事件
+     * @param record
+     */
+    @KafkaListener(topics = {TOPIC_SHARE})
+    public void handleShareMessage(ConsumerRecord record){
+        //判空
+        if(record == null || record.value() == null){
+            LOGGER.error("消息的内容为空！");
+            return;
+        }
+
+        //将消息内容字符串转换为Event对象
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        //判空
+        if(event == null){
+            LOGGER.error("消息格式错误！");
+            return;
+        }
+
+        String htmlUrl = (String) event.getData().get("htmlUrl");
+        String fileName = (String) event.getData().get("fileName");
+        String suffix = (String) event.getData().get("suffix");
+
+        //拼接命令
+        String cmd = WKImageCommand + " --quality 75 "
+                + htmlUrl + " " + WKImageStorage + "/" + fileName + suffix;
+        //执行命令
+        try {
+            Runtime.getRuntime().exec(cmd);
+            LOGGER.error("生成长图成功：" + cmd);
+        } catch (IOException e) {
+            LOGGER.error("生成长图失败：" + e.getMessage());
+        }
     }
 
 }
